@@ -1,0 +1,53 @@
+<html>
+<head>
+<script>
+
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+var context = new AudioContext();
+var o = context.createOscillator();
+var g = context.createGain();
+o.start(0);
+g.gain.exponentialRampToValueAtTime(
+  	0.00001, context.currentTime + 0.04
+);	
+
+function sendByte(frequency){
+	
+	o.frequency.value = frequency;
+	console.log(frequency);
+	o.connect(g);
+	g.connect(context.destination);
+
+	g.gain.exponentialRampToValueAtTime(
+  		50.00001, context.currentTime + 0.04
+	);
+
+	var date = new Date();
+	var curDate = null;
+	do { curDate = new Date(); } 
+		while(curDate-date < 1000);
+
+	g.gain.exponentialRampToValueAtTime(
+  		0.00001, context.currentTime + 0.04
+	);	
+}
+
+function sendData(){
+	var str = "Hello world!";
+	for (var i = 0, len = str.length; i < len; i++) {
+		var date = new Date();
+		var curDate = null;
+		do { curDate = new Date(); } 
+			while(curDate-date < 1000);
+		sendByte(99);
+ 		sendByte(str[i].charCodeAt(0) + 100);
+		console.log(str[i]);
+	}
+}
+
+</script>
+</head>
+<body>
+	<button onclick="sendData()">send data</button>
+</body>
+</html>
